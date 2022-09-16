@@ -6,7 +6,6 @@
 library(sf)
 library(tidyverse)
 library(mapview)
-mapviewOptions(fgb = FALSE) # needed when creating web pages
 
 
 # modern geographies to match to ------------------------------------------------------
@@ -25,7 +24,7 @@ lad2021 <- st_read("../../Data/Boundaries/Local_Authority_Districts_(December_20
 # 1981 Census geographies --------------------------------------------------------------
 
 # these boundaries downloaded from https://borders.ukdataservice.ac.uk/easy_download.html
-# England and Wales are wards; Scotland is actually 
+# England and Wales are wards; Scotland is actually enumeration districts or postcode sectors
 ward_eng_81 <- st_read("../../Data/Boundaries/Wards historic/England_wa_1981")
 ward_sco_81 <- st_read("../../Data/Boundaries/Wards historic/Scotland_wa_1981")
 ward_wal_81 <- st_read("../../Data/Boundaries/Wards historic/Wales_wa_1981")
@@ -34,7 +33,7 @@ ward_wal_81 <- st_read("../../Data/Boundaries/Wards historic/Wales_wa_1981")
 ward_gb_81 <- bind_rows(ward_eng_81, ward_sco_81, ward_wal_81)
 rm(ward_eng_81, ward_sco_81, ward_wal_81)
 
-# spatial join
+# spatial join of LAD 2021
 ward_gb_81 <- 
   ward_gb_81 %>% 
   st_join(lad2021 %>% select(LAD21CD, LAD21NM, LAD21NMW), 
@@ -44,12 +43,38 @@ ward_gb_81 <-
 # check for any non-matching areas 
 ward_gb_81 %>% filter(is.na(LAD21CD) )
 # one shapefile with no LAD match
-ward_gb_81 %>% filter(label == "6554AC") %>% mapview()
+ward_gb_81 %>% filter(label == "6554AC") %>% mapview(label = "LAD21NM")
+# belongs to Orkney Islands
+ward_gb_81 %>% filter(label == "6554AC") %>% View()
+# add manually
+ward_gb_81 <- ward_gb_81 %>% 
+  mutate(LAD21CD = ifelse(label == "6554AC", "S12000023", LAD21CD), 
+         LAD21NM = ifelse(label == "6554AC", "Orkney Islands", LAD21NM) )
+
+# spatial join of TTWA 2011
+ward_gb_81 <- 
+  ward_gb_81 %>% 
+  st_join(ttwa2011 %>% select(ttwa11cd, ttwa11nm), 
+          join = st_intersects, 
+          largest = T)
+
+# check for any non-matching areas 
+ward_gb_81 %>% filter(is.na(ttwa11cd) )
+# view on map
+mapview(ttwa2011) + 
+  ward_gb_81 %>% filter(label == "6332CE") %>% mapview()
+# join with nearest feature 
+ward_gb_81 %>% 
+  filter(is.na(ttwa11cd) ) %>% 
+  select(-ttwa11cd, -ttwa11nm) %>% 
+  st_join(ttwa2011 %>% select(ttwa11cd, ttwa11nm), 
+          join = st_nearest_feature)
+
 
 
 ########## TNT ##########################
-# manually assign LAD to this one shapefile
-# join TTWA
+# join these complete records to the main table 
+# add region 
 # create lookup table, making sure only one entry per ward / postcode sector
 # check this lookup table matches with the bulk data downloaded for 1981 Census 
 # then move on to 1991, 2001, 2011
