@@ -4,12 +4,35 @@ This code creates lookup tables between historic small area geographies and mode
 
 The small areas depend upon the Census year, as they have changed over time
 
-1981 Census:
+## Bulk data downloads of small area Census data
 
-- England and Wales: electoral wards (area code example 01AAAA)
-- Scotland: enumeration districts?  not sure what they were called (area code example 6554AC)
+A single .zip file with small area statistics data is available for each of the 1971, 1981, 1991, 1981 and 2001 Censuses from the [UK Data Service](https://statistics.ukdataservice.ac.uk/).  These are not always as helpful as they could be, as they come with minimal (or no!) documentation, and understanding what the tables refer to often requires referring to the small area statistics tables on [Nomis](https://www.nomisweb.co.uk/default.asp) (at the time of writing I think this service is under development so it may improve).  
 
-1991 Census:
+There are legacy UKDS services at [Casweb](https://casweb.ukdataservice.ac.uk//) and [InFuse](http://infuse.ukdataservice.ac.uk/).  
 
-- to be added ...
+Historic boundary datasets for the UK Censuses from 1971 onwards are available from the [UK Borders service](https://borders.ukdataservice.ac.uk/index.html) (not all boundaries are available as 'easy download' - see the 'boundary data selector' for all available boundaries); more recent boundary sets are available from the [ONS geography portal](https://geoportal.statistics.gov.uk/). 
+
+
+## 1981 Census small areas
+
+- England & Wales: electoral wards used for small area statistics (area code example 01AAAA)
+- Scotland: ward equivalent is postcode sectors, see [guidance on NRS website](https://www.nrscotland.gov.uk/files//geography/products/1991-census-bkgrd.pdf) (area code example 6554AC)
+- total of 10,445 wards and postcode sectors on land - 'shipping' geographic codes were also included to count people not present on land at the time of the Census.  These codes all end in 'SS' (e.g. 01AASS). Including these shipping codes there are 10,903 small areas 
+
+Below this level there are enumeration districts for Scotland (e.g. 5601AB03) and England & Wales (e.g. 01AAAA01).  
+
+Full small area datasets with Great Britain data combined are available from UK Data Service bulk download.  Hierarchy number 3 has wards for England & Wales and postcode sectors for Scotland; hierarchy number 4 has enumeration districts.  
+
+## 1991 Census small areas 
+
+- England & Wales: use wards for small area statistics 
+- Scotland: ward equivalent is postcode sectors, see [guidance on NRS website](https://www.nrscotland.gov.uk/files//geography/products/1991-census-bkgrd.pdf)
+
+
+
+## 2001 Census
+
+[Nomis](www.nomisweb.co.uk) only has data for England & Wales
+
+Data Zone data for Scotland is available on the [NRS website](https://www.scotlandscensus.gov.uk/documents/2001-census-table-data-2001-datazones/)
 
