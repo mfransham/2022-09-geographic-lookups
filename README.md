@@ -25,9 +25,10 @@ Full small area datasets with Great Britain data combined are available from UK 
 
 ## 1991 Census small areas 
 
-- England & Wales: use wards for small area statistics 
+- England & Wales: use wards for small area statistics (e.g. )
 - Scotland: ward equivalent is postcode sectors, see [guidance on NRS website](https://www.nrscotland.gov.uk/files//geography/products/1991-census-bkgrd.pdf)
 
+Full small area datasets with Great Britain data combined are available from UK Data Service bulk download.  Hierarchy number 3 has wards for England & Wales and postcode sectors for Scotland; hierarchy number 4 has enumeration districts for England & Wales and Output Areas for Scotland.  
 
 
 ## 2001 Census
