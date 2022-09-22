@@ -28,7 +28,7 @@ region <- st_read("../../Data/Boundaries/International_Territorial_Level_1_(Janu
 # 1981 Census geographies --------------------------------------------------------------------------------
 
 # these boundaries downloaded from https://borders.ukdataservice.ac.uk/easy_download.html
-# England and Wales are wards; Scotland is actually postcode sectors
+# England and Wales are wards; Scotland is actually postcode sectors despite being labelled wards 
 ward_eng_81 <- st_read("../../Data/Boundaries/Small areas historic/England_wa_1981")
 ward_sco_81 <- st_read("../../Data/Boundaries/Small areas historic/Scotland_wa_1981")
 ward_wal_81 <- st_read("../../Data/Boundaries/Small areas historic/Wales_wa_1981")
@@ -130,38 +130,43 @@ write_csv(lkup_ward81_ttwa2011_lad2021, "lookup-tables/lkup_ward81_ttwa2011_lad2
 # 1991 Census geographies --------------------------------------------------------------------------------
 
 # these boundaries downloaded from https://borders.ukdataservice.ac.uk/easy_download.html
-# England and Wales are wards; Scotland is actually postcode sectors
+# England and Wales are wards
 ward_eng_91 <- st_read("../../Data/Boundaries/Small areas historic/England_wa_1991")
-ward_wal_91 <- st_read("../../Data/Boundaries/Small areas historic/Wales_wa_1991")
+# note that the file Wales_wa_1991 is missing data, hence using the generalised version which is complete
+ward_wal_91 <- st_read("../../Data/Boundaries/Small areas historic/Wales_wa_1991_gen3")
 
-# sort Scotland out!!!
-pcs_sco_91 <- st_read("../../Data/Boundaries/Small areas historic/Scotland_pcs_1991")
-ward_sco_91 <- st_read("../../Data/Boundaries/Small areas historic/Scotland_wa_1991")
-
-nrow(ward_eng_91) + nrow(ward_wal_91) + nrow(pcs_sco_91)
-
-head(pcs_sco_91)
-head(ward_sco_91)
+# Scotland areas are listed as "Pseudo Postcode Sectors" on UK Borders service
+# https://borders.ukdataservice.ac.uk/easy_download_data.html?data=Scotland_oas_1991
+# note that this also contains shapefiles for Lochs (e.g. "Loch1") that have no associated Census data 
+pcs_sco_91 <- st_read("../../Data/Boundaries/Small areas historic/Scotland_oas_1991_pseudopcs") 
+# fix mislabelled area and remove Lochs and 'gp' variable that just has zeroes in it
+pcs_sco_91 <- 
+  pcs_sco_91 %>% 
+  mutate(label = ifelse(label == "w", "6452AC", label) ) %>% 
+  filter(name != "Loch") %>% 
+  select(-gp)
 
 # join in single GB dataset 
 ward_gb_91 <- bind_rows(ward_eng_91, pcs_sco_91, ward_wal_91)
 rm(ward_eng_91, ward_sco_91, ward_wal_91)
 
-census91 <- read_csv("../../Data/Census 1991/s08ews3.csv") %>% select(1:3)
-census91 %>% mutate(ss = substr(zoneid, 5, 6) ) %>% filter(ss != "SS") %>% nrow()
-ward_gb_91 %>% as.data.frame() %>% group_by(label) %>% slice_sample(n=1) %>% nrow()
+# we now have a fully matched set of data - whoop!!
+ward_gb_91 %>% 
+  as.data.frame() %>% 
+  select(-geometry) %>%
+  distinct(label) %>%
+  full_join(census91, 
+            by = c("label" = "zoneid"),
+            keep = T) %>% 
+  filter(is.na(label) ) %>%
+  filter(substr(zoneid, 5, 6) != "SS") %>% 
+  View()
 
-ward_gb_91 %>% as.data.frame() %>% select(-geometry) %>% View()
 
 ########## TNT ##########################
-# need to sort Scotland out - SAS data is definitely postcode sectors
-# but I am not sure if the shapefile I have downloaded is the right postcode sectors
-# even if it is, it does not have the same codes - aargh!!
-
-
+# do the spatial joins for 1991 small areas 
 # then move on to 2001, 2011
-# later: could do the same for NESPD areas, should be pretty easy if this works (as it seems to be doing) 
-
+# later: could do the same for NESPD areas, should be pretty easy  
 
 
 

@@ -23,13 +23,17 @@ Below this level there are enumeration districts for Scotland (e.g. 5601AB03) an
 
 Full small area datasets with Great Britain data combined are available from UK Data Service bulk download.  Hierarchy number 3 has wards for England & Wales and postcode sectors for Scotland; hierarchy number 4 has enumeration districts.  
 
+Shapefiles are available from UK Borders website.  Dataset listed as [Scottish Wards is actually postcode sectors](https://borders.ukdataservice.ac.uk/easy_download_data.html?data=Scotland_wa_1981).  
+
 ## 1991 Census small areas 
 
-- England & Wales: use wards for small area statistics (e.g. )
-- Scotland: ward equivalent is postcode sectors, see [guidance on NRS website](https://www.nrscotland.gov.uk/files//geography/products/1991-census-bkgrd.pdf)
+- England & Wales: use wards for small area statistics (area code example 17FEFL)
+- Scotland: ward equivalent is postcode sectors, see [guidance on NRS website](https://www.nrscotland.gov.uk/files//geography/products/1991-census-bkgrd.pdf) (area code example 6123AL)
+- total of 10,528 wards and postcode sectors, excluding 'SS' shipping codes and lochs (the latter are included in the Scottish postcode sector shapefile)
 
 Full small area datasets with Great Britain data combined are available from UK Data Service bulk download.  Hierarchy number 3 has wards for England & Wales and postcode sectors for Scotland; hierarchy number 4 has enumeration districts for England & Wales and Output Areas for Scotland.  
 
+Boundaries are available from UK Borders service, however it is tricky to find the right ones. For England, it is [electoral wards](https://borders.ukdataservice.ac.uk/easy_download_data.html?data=England_wa_1991) which is straightforward.  For Wales it is also [electoral wards](https://borders.ukdataservice.ac.uk/easy_download_data.html?data=Wales_wa_1991) but the standard boundary dataset is incomplete - the one listed as 'super generalised' is complete.  For Scotland you need to find the ['pseudo postcode sectors'](https://borders.ukdataservice.ac.uk/easy_download_data.html?data=Scotland_oas_1991).  One of the areas in the Scotland dataset is mislabelled, see code for details.  
 
 ## 2001 Census
 
