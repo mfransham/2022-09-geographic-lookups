@@ -150,17 +150,39 @@ pcs_sco_91 <-
 ward_gb_91 <- bind_rows(ward_eng_91, pcs_sco_91, ward_wal_91)
 rm(ward_eng_91, ward_sco_91, ward_wal_91)
 
-# we now have a fully matched set of data - whoop!!
-ward_gb_91 %>% 
-  as.data.frame() %>% 
-  select(-geometry) %>%
-  distinct(label) %>%
-  full_join(census91, 
-            by = c("label" = "zoneid"),
-            keep = T) %>% 
-  filter(is.na(label) ) %>%
-  filter(substr(zoneid, 5, 6) != "SS") %>% 
-  View()
+# spatial join of LAD 2021 ----------------
+ward_gb_91 <- 
+  ward_gb_91 %>% 
+  st_join(lad2021 %>% select(LAD21CD, LAD21NM, LAD21NMW), 
+          join = st_intersects, 
+          largest = T)
+
+# check for any non-matching areas 
+ward_gb_91 %>% filter(is.na(LAD21CD) )
+# join with nearest feature 
+non_matching <- 
+  ward_gb_91 %>% 
+  filter(is.na(LAD21CD) ) %>% 
+  select(-LAD21CD, -LAD21NM, -LAD21NMW) %>% 
+  st_join(lad2021 %>% select(LAD21CD, LAD21NM, LAD21NMW), 
+          join = st_nearest_feature)
+# remove incomplete records, add complete records
+ward_gb_91 <- 
+  ward_gb_91 %>% 
+  filter(!(is.na(LAD21CD) ) ) %>% 
+  bind_rows(non_matching)
+# remove auxiliary data frame
+rm(non_matching)
+
+
+# one shapefile with no LAD match
+ward_gb_81 %>% filter(label == "6554AC") %>% mapview(label = "LAD21NM")
+# belongs to Orkney Islands
+ward_gb_81 %>% filter(label == "6554AC") %>% View()
+# add manually
+ward_gb_81 <- ward_gb_81 %>% 
+  mutate(LAD21CD = ifelse(label == "6554AC", "S12000023", LAD21CD), 
+         LAD21NM = ifelse(label == "6554AC", "Orkney Islands", LAD21NM) )
 
 
 ########## TNT ##########################
@@ -170,23 +192,7 @@ ward_gb_91 %>%
 
 
 
-# spatial join of LAD 2021 ----------------
-ward_gb_81 <- 
-  ward_gb_81 %>% 
-  st_join(lad2021 %>% select(LAD21CD, LAD21NM, LAD21NMW), 
-          join = st_intersects, 
-          largest = T)
 
-# check for any non-matching areas 
-ward_gb_81 %>% filter(is.na(LAD21CD) )
-# one shapefile with no LAD match
-ward_gb_81 %>% filter(label == "6554AC") %>% mapview(label = "LAD21NM")
-# belongs to Orkney Islands
-ward_gb_81 %>% filter(label == "6554AC") %>% View()
-# add manually
-ward_gb_81 <- ward_gb_81 %>% 
-  mutate(LAD21CD = ifelse(label == "6554AC", "S12000023", LAD21CD), 
-         LAD21NM = ifelse(label == "6554AC", "Orkney Islands", LAD21NM) )
 
 # spatial join of TTWA 2011 ------------------------
 ward_gb_81 <- 
