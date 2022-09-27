@@ -305,6 +305,68 @@ lkup_lsoazd01_ttwa2011_lad2021 <-
 write_csv(lkup_lsoazd01_ttwa2011_lad2021, "lookup-tables/lkup_lsoazd01_ttwa2011_lad2021.csv")
 
 
+# 2011 Census geographies --------------------------------------------------------------------------------
+
+# lsoa boundaries
+lsoa2011 <- st_read("../../Data/Boundaries/Lower_Layer_Super_Output_Areas_(December_2011)_Boundaries_Generalised_Clipped_(BGC)_EW_V3")
+# data zones
+dz2011 <- st_read("../../Data/Boundaries/Output Areas/SG_DataZoneBdry_2011")
+
+# join in single GB dataset 
+lsoa2011 <- lsoa2011 %>% 
+  select(LSOA11CD, LSOA11NM, geometry) %>% 
+  rename(areacode = LSOA11CD, 
+         areaname = LSOA11NM)
+dz2011 <- dz2011 %>% 
+  select(DataZone, Name, geometry) %>% 
+  rename(areacode = DataZone, 
+         areaname = Name)
+lsoadz_2011 <- bind_rows(lsoa2011, dz2011)
+rm(lsoa2011, dz2011)
+
+# spatial join of LAD 2021 ----------------
+lsoadz_2011 <- 
+  lsoadz_2011 %>% 
+  st_join(lad2021 %>% select(LAD21CD, LAD21NM, LAD21NMW), 
+          join = st_intersects, 
+          largest = T)
+
+# check for any non-matching areas (all matched)
+lsoadz_2011 %>% filter(is.na(LAD21CD) )
+
+# join of TTWA 2021 ----------------------
+
+# lookup table we already have for 2011 TTWAs
+lkup2011ttwa <- read_csv("../../Data/Lookups/LSOA DZ SOA to TTWA Lookup_V4.csv")
+
+lsoadz_2011 <- lsoadz_2011 %>% 
+  left_join(lkup2011ttwa %>% select(LSOA11CD, TTWA11CD, TTWA11NM), 
+            by = c("areacode" = "LSOA11CD") )
+
+# check non-matching areas (all matched)
+lsoadz_2011 %>% filter(is.na(TTWA11CD) )
+
+# spatial join of region --------------------------
+lsoadz_2011 <- 
+  lsoadz_2011 %>% 
+  st_join(region %>% select(ITL121CD, ITL121NM), 
+          join = st_intersects, 
+          largest = T)
+
+# check for any non-matching areas (all matched)
+lsoadz_2011 %>% filter(is.na(ITL121CD) )
+
+# create lookup table, removing any duplicates ------------------------------------------
+lkup_lsoadz11_ttwa2011_lad2021 <- 
+  lsoadz_2011 %>% 
+  as.data.frame() %>% 
+  select(-geometry) %>% 
+  group_by(areacode) %>% 
+  slice_sample(n = 1) %>% 
+  ungroup()
+
+# write out lookup table 
+write_csv(lkup_lsoadz11_ttwa2011_lad2021, "lookup-tables/lkup_lsoadz11_ttwa2011_lad2021.csv")
 
 
 # session info -------------------------------------------------------------------------

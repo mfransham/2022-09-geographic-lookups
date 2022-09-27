@@ -40,7 +40,7 @@ Boundaries are available from UK Borders service, however it is tricky to find t
 This is the first year of the modern Data Zone / Output Area hierarchy of small areas, with a statistical (rather than electoral or administrative) geography covering the whole of Britain.  
 
 - England & Wales: output areas (OAs), lower super output areas (LSOAs), middle super output areas (LSOAs).  My preference is to work with LSOAs
-- Scotland: Data Zones (DZs)
+- Scotland: Data Zones (DZs) and Intermediate Zones (IZs). My preference is to work with DZs.  
 
 LSOA data is available in the 2001 Census bulk data download from the [UK Data Service](https://statistics.ukdataservice.ac.uk/dataset/census-2001-data), or from [NOMIS](https://www.nomisweb.co.uk/sources/census_2001). In the UKDS bulk data file, the LSOA data is in the files starting with "s" e.g. "s01ks09a_ons.csv"
 
@@ -48,5 +48,11 @@ DZ data is available as a bulk download zip file from the [National Records of S
 
 Boundaries for 2001 Data Zones and LSOAs are readily available.
 
+## 2011 Census small areas
 
+The small area hierarchy has the same structure as in 2001, but updated sets of the geographies were produced (i.e. there are separate 2001 and 2001 versions of LSOAs, etc).
+
+Small area data for the whole UK is available from Nomis.
+
+Boundaries for 2011 Data Zones and LSOAs are readily available including from the [ONS Open Geography Portal](https://geoportal.statistics.gov.uk/). 
 
