@@ -35,9 +35,18 @@ Full small area datasets with Great Britain data combined are available from UK 
 
 Boundaries are available from UK Borders service, however it is tricky to find the right ones. For England, it is [electoral wards](https://borders.ukdataservice.ac.uk/easy_download_data.html?data=England_wa_1991) which is straightforward.  For Wales it is also [electoral wards](https://borders.ukdataservice.ac.uk/easy_download_data.html?data=Wales_wa_1991) but the standard boundary dataset is incomplete - the one listed as 'super generalised' is complete.  For Scotland you need to find the ['pseudo postcode sectors'](https://borders.ukdataservice.ac.uk/easy_download_data.html?data=Scotland_oas_1991).  One of the areas in the Scotland dataset is mislabelled, see code for details.  
 
-## 2001 Census
+## 2001 Census small areas
 
-[Nomis](www.nomisweb.co.uk) only has data for England & Wales
+This is the first year of the modern Data Zone / Output Area hierarchy of small areas, with a statistical (rather than electoral or administrative) geography covering the whole of Britain.  
 
-Data Zone data for Scotland is available on the [NRS website](https://www.scotlandscensus.gov.uk/documents/2001-census-table-data-2001-datazones/)
+- England & Wales: output areas (OAs), lower super output areas (LSOAs), middle super output areas (LSOAs).  My preference is to work with LSOAs
+- Scotland: Data Zones (DZs)
+
+LSOA data is available in the 2001 Census bulk data download from the [UK Data Service](https://statistics.ukdataservice.ac.uk/dataset/census-2001-data), or from [NOMIS](https://www.nomisweb.co.uk/sources/census_2001). In the UKDS bulk data file, the LSOA data is in the files starting with "s" e.g. "s01ks09a_ons.csv"
+
+DZ data is available as a bulk download zip file from the [National Records of Scotland](https://www.scotlandscensus.gov.uk/census-results/download-data/census-table-data/) (it is not available via UKDS or Nomis).  
+
+Boundaries for 2001 Data Zones and LSOAs are readily available.
+
+
 
