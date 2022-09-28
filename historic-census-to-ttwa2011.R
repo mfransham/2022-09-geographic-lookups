@@ -13,7 +13,7 @@ library(mapview)
 # TTWA
 # from https://geoportal.statistics.gov.uk/search?collection=Dataset&sort=name&tags=all(BDY_TTWA%2CDEC_2011)
 ttwa2011 <- st_read("../../Data/Boundaries/Travel_to_Work_Areas_December_2011_Generalised_Clipped_Boundaries_in_United_Kingdom")
-ttwa2011 %>% st_geometry() %>% plot()
+# ttwa2011 %>% st_geometry() %>% plot()
 # mapview(ttwa2011)
 
 # local authority districts (363, as at April 2021)
