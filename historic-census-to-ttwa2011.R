@@ -24,6 +24,17 @@ lad2021 <- st_read("../../Data/Boundaries/Local_Authority_Districts_(December_20
 # from https://geoportal.statistics.gov.uk/search?collection=Dataset&sort=name&tags=all(BDY_ITL1%2CJAN_2021)
 region <- st_read("../../Data/Boundaries/International_Territorial_Level_1_(January_2021)_UK_BGC")
 
+# lookup table for alternative ONS code for regions used by Nomis
+regioncodes <- read_csv("../../../Dropbox/LNRI UK TEAM/Data/NOMIS/CC_RateToWor_1971_2022_REG.csv", 
+                         col_select = c("name", "region") ) %>% 
+  rename(reg_nm = name, reg_cd = region)
+# add to region shapefile
+lkup_region <- region %>% 
+  as.data.frame() %>% 
+  bind_cols(regioncodes) %>% 
+  select(ITL121CD, reg_cd, reg_nm)
+# tidy up
+rm(regioncodes)
 
 # 1981 Census geographies --------------------------------------------------------------------------------
 
@@ -91,7 +102,7 @@ rm(non_matching)
 # spatial join of region ----------------------------------------------
 ward_gb_81 <- 
   ward_gb_81 %>% 
-  st_join(region %>% select(ITL121CD, ITL121NM), 
+  st_join(region %>% select(ITL121CD, ITL121NM, reg_cd, reg_nm), 
           join = st_intersects, 
           largest = T)
 
@@ -102,7 +113,7 @@ non_matching <-
   ward_gb_81 %>% 
   filter(is.na(ITL121CD) ) %>% 
   select(-ITL121CD, -ITL121NM) %>% 
-  st_join(region %>% select(ITL121CD, ITL121NM), 
+  st_join(region %>% select(ITL121CD, ITL121NM, reg_cd, reg_nm), 
           join = st_nearest_feature)
 # remove incomplete records, add complete records  
 ward_gb_81 <- 
@@ -120,6 +131,10 @@ lkup_ward81_ttwa2011_lad2021 <-
   group_by(label) %>% 
   slice_sample(n = 1) %>% 
   ungroup()
+
+# add alternative region code
+lkup_ward81_ttwa2011_lad2021 <- lkup_ward81_ttwa2011_lad2021 %>% 
+  left_join(lkup_region, by = "ITL121CD")
 
 # check against 1981 bulk data
 # this works - the only missing codes are those for people at sea (codes ending in 'SS')
@@ -237,6 +252,10 @@ lkup_ward91_ttwa2011_lad2021 <-
   slice_sample(n = 1) %>% 
   ungroup()
 
+# add alternative region code
+lkup_ward91_ttwa2011_lad2021 <- lkup_ward91_ttwa2011_lad2021 %>% 
+  left_join(lkup_region, by = "ITL121CD")
+
 # write out lookup table 
 write_csv(lkup_ward91_ttwa2011_lad2021, "lookup-tables/lkup_wardpcs91_ttwa2011_lad2021.csv")
 
@@ -301,6 +320,10 @@ lkup_lsoazd01_ttwa2011_lad2021 <-
   slice_sample(n = 1) %>% 
   ungroup()
 
+# add alternative region code
+lkup_lsoazd01_ttwa2011_lad2021 <- lkup_lsoazd01_ttwa2011_lad2021 %>% 
+  left_join(lkup_region, by = "ITL121CD")
+
 # write out lookup table 
 write_csv(lkup_lsoazd01_ttwa2011_lad2021, "lookup-tables/lkup_lsoazd01_ttwa2011_lad2021.csv")
 
@@ -364,6 +387,10 @@ lkup_lsoadz11_ttwa2011_lad2021 <-
   group_by(areacode) %>% 
   slice_sample(n = 1) %>% 
   ungroup()
+
+# add alternative region code
+lkup_lsoadz11_ttwa2011_lad2021 <- lkup_lsoadz11_ttwa2011_lad2021 %>% 
+  left_join(lkup_region, by = "ITL121CD")
 
 # write out lookup table 
 write_csv(lkup_lsoadz11_ttwa2011_lad2021, "lookup-tables/lkup_lsoadz11_ttwa2011_lad2021.csv")
