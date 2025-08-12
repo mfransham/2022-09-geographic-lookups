@@ -396,6 +396,35 @@ lkup_lsoadz11_ttwa2011_lad2021 <- lkup_lsoadz11_ttwa2011_lad2021 %>%
 write_csv(lkup_lsoadz11_ttwa2011_lad2021, "lookup-tables/lkup_lsoadz11_ttwa2011_lad2021.csv")
 
 
+## 2022 Scotland intermediate data zones ------------------------------------------------
+
+# data zones
+idz2022 <- st_read("../../Data/Boundaries/Output Areas 2021-22/Scotland_iz_2022_eor/")
+
+# spatial join of TTWA 2011 ----------------
+idz2022 <- 
+  idz2022 %>% 
+  select(izcode, izname) %>% 
+  st_join(ttwa2011 %>% select(ttwa11cd, ttwa11nm), 
+          join = st_intersects, 
+          largest = T)
+
+# check for any non-matching areas (all matched)
+idz2022 %>% filter(is.na(ttwa11cd) )
+
+# create lookup table, removing any duplicates ------------------------------------------
+lkup_idz2022_ttwa2011 <- 
+  idz2022 %>% 
+  as.data.frame() %>% 
+  select(-geometry) %>% 
+  group_by(izcode) %>% 
+  slice_sample(n = 1) %>% 
+  ungroup()
+
+# write out lookup table 
+write_csv(lkup_idz2022_ttwa2011, "lookup-tables/lkup_idz2022_ttwa2011.csv")
+
+
 # session info -------------------------------------------------------------------------
 
 # keep this up to date!

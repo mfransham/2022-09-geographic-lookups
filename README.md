@@ -56,3 +56,8 @@ Small area data for the whole UK is available from Nomis.
 
 Boundaries for 2011 Data Zones and LSOAs are readily available including from the [ONS Open Geography Portal](https://geoportal.statistics.gov.uk/). 
 
+## 2021-22 Census small areas
+
+The small area hierarchy was again very similar. The Censuses were conducted in 2021 in England and Wales but in 2022 in Scotland (due to the covid pandemic). 
+
+In this repo there is just one lookup at the moment - from Scottish intermediate data zone 2022 to TTWA 2011. 
